@@ -3,6 +3,7 @@ package respot
 import (
 	"github.com/arcspace/go-arc-sdk/apis/arc"
 	"github.com/arcspace/go-arc-sdk/stdlib/task"
+	"github.com/arcspace/go-librespot/Spotify"
 	"github.com/arcspace/go-librespot/librespot/core/crypto"
 	"github.com/arcspace/go-librespot/librespot/mercury"
 )
@@ -56,8 +57,9 @@ type Session interface {
 }
 
 type PinOpts struct {
-
 	// If set, MediaAsset.OnStart(Ctx().Context) will be called on the returned MediaAsset.
 	// This is for convenience but not desirable when the asset is in a time-to-live cache, for example.
 	StartInternally bool
+
+	PreferredFormats []Spotify.AudioFile_Format
 }

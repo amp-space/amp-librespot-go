@@ -200,15 +200,15 @@ func (dl *downloader) RequestChunk(chunkIdx ChunkIdx, asset *mediaAsset) (*asset
 }
 
 func (dl *downloader) HandleCmd(cmd byte, data []byte) error {
-	switch {
-	case cmd == connection.PacketAesKey:
+	switch cmd {
+	case connection.PacketAesKey:
 		seqID := binary.BigEndian.Uint32(data[0:4])
 		if channel, ok := dl.seqChans.Load(seqID); ok {
 			channel.(chan []byte) <- data[4:20]
 		} else {
 			return fmt.Errorf("unknown channel %d", seqID)
 		}
-	case cmd == connection.PacketAesKeyError:
+	case connection.PacketAesKeyError, connection.PacketChannelError:
 		seqID := binary.BigEndian.Uint32(data[0:4])
 		if channel, ok := dl.seqChans.Load(seqID); ok {
 			channel.(chan []byte) <- nil
@@ -216,7 +216,7 @@ func (dl *downloader) HandleCmd(cmd byte, data []byte) error {
 			return fmt.Errorf("unknown channel %d", seqID)
 		}
 		return fmt.Errorf("audio key error")
-	case cmd == connection.PacketStreamChunkRes:
+	case connection.PacketStreamChunkRes:
 		chID, assetData, err := ReadU16(data)
 		if err != nil {
 			return err

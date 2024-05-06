@@ -261,7 +261,7 @@ func (s *Session) handle(cmd uint8, data []byte) error {
 	case cmd == connection.PacketPongAck:
 		// Pong reply, ignore
 
-	case cmd == connection.PacketAesKey || cmd == connection.PacketAesKeyError || cmd == connection.PacketStreamChunkRes:
+	case cmd == connection.PacketAesKey || cmd == connection.PacketAesKeyError || cmd == connection.PacketStreamChunkRes || cmd == connection.PacketChannelError:
 		// Audio key and data responses
 		if err := s.downloader.HandleCmd(cmd, data); err != nil {
 			return fmt.Errorf("could not handle cmd: %+v", err)
@@ -294,7 +294,7 @@ func (s *Session) handle(cmd uint8, data []byte) error {
 		// is [ uint16 id (= 0x001), uint8 len, string license ]
 
 	default:
-		log.Printf("un implemented command received: %+v\n", cmd)
+		log.Printf("unimplemented command received: %+v\n", cmd)
 	}
 
 	return nil
